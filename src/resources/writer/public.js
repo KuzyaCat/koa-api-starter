@@ -10,5 +10,6 @@ require('./add-book').register(router);
 require('./delete-book').register(router);
 require('./update-book').register(router);
 require('./update-all-books').register(router);
+require('./get-list').register(router);
 
 module.exports = router.routes();

@@ -3,7 +3,7 @@ const validate = require('middlewares/validate');
 const Joi = require('@hapi/joi');
 
 const schema = Joi.object({
-  pageNumber: Joi.number().integer(),
+  pageNumber: Joi.number().integer().min(0),
   documentsInPage: Joi.number().integer().min(1).max(5),
   sortBy: Joi.string(),
   sortOrder: Joi.string(),

@@ -1,11 +1,7 @@
 const validate = require('middlewares/validate');
 const writerService = require('resources/writer/writer.service');
 const Joi = require('@hapi/joi');
-
-const bookSchema = Joi.object().keys({
-  title: Joi.string(),
-  genre: Joi.string().valid('novel', 'poem'),
-});
+const bookSchema = require('../book.schema');
 
 const schema = Joi.object({
   firstName: Joi.string(),
@@ -16,7 +12,8 @@ const schema = Joi.object({
 
 async function handler(ctx) {
   const { firstName, lastName, age } = ctx.request.body;
-  ctx.body = await writerService.create({ firstName, lastName, age });
+  const books = [];
+  ctx.body = await writerService.create({ firstName, lastName, age, books });
 }
 
 module.exports.register = (router) => {

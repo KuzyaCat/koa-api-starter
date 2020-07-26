@@ -1,10 +1,5 @@
 const Joi = require('@hapi/joi');
-
-const bookSchema = Joi.object().keys({
-  _id: Joi.string(),
-  title: Joi.string(),
-  genre: Joi.string().valid('novel', 'poem'),
-});
+const bookSchema = require('./book.schema');
 
 const schema = Joi.object({
   _id: Joi.string(),

@@ -5,8 +5,8 @@ const Joi = require('@hapi/joi');
 const schema = Joi.object({
   pageNumber: Joi.number().integer().min(0),
   documentsInPage: Joi.number().integer().min(1).max(5),
-  sortBy: Joi.string(),
-  sortOrder: Joi.string(),
+  sortBy: Joi.string().valid('_id', 'createdOn', 'firstName', 'lastName'),
+  sortOrder: Joi.string().valid('asc', 'desc'),
 });
 
 async function handler(ctx) {
@@ -15,7 +15,7 @@ async function handler(ctx) {
     documentsInPage,
     sortBy,
     sortOrder,
-  } = ctx.params;
+  } = ctx.request.query;
 
   if (!sortBy) {
     sortBy = '_id';
@@ -23,23 +23,23 @@ async function handler(ctx) {
   const sortOrderInNumber = sortOrder === 'asc' ? 1 : -1;
 
   const writersList = (
-    await writerService._collection.find({}, {
+    await writerService.find({}, {
+      page: pageNumber,
+      perPage: +documentsInPage,
       sort: { [sortBy]: sortOrderInNumber },
-      skip: pageNumber * documentsInPage - 1,
-      limit: +documentsInPage,
     })
   );
 
-  const count = await writerService.count();
+  const numberOfAllDocuments = await writerService.count();
 
   ctx.body = {
     data: writersList,
     meta: {
-      numberOfAllDocuments: count,
+      numberOfAllDocuments,
     },
   }
 }
 
 module.exports.register = (router) => {
-  router.get('/list/:pageNumber/:documentsInPage/:sortBy/:sortOrder', validate(schema), handler);
+  router.get('/list', validate(schema), handler);
 };

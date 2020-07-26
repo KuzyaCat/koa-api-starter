@@ -1,26 +1,15 @@
 const validate = require('middlewares/validate');
 const writerService = require('resources/writer/writer.service');
 const Joi = require('@hapi/joi');
-
-const book = Joi.object().keys({
-  title: Joi.string(),
-  genre: Joi.string().valid('novel', 'poem'),
-});
+const bookSchema = require('../book.schema');
 
 const schema = Joi.object({
-  books: Joi.array().items(book),
+  books: Joi.array().items(bookSchema),
 });
 
 async function handler(ctx) {
   const data = ctx.validatedData;
-  ctx.body = await writerService.update({ _id: ctx.params.id }, (doc) => {
-    let { books } = doc;
-    books = data;
-    return {
-      ...doc,
-      books,
-    };
-  });
+  ctx.body = await writerService.update({ _id: ctx.params.id }, { $set: { books: data.books } });
 }
 
 module.exports.register = (router) => {

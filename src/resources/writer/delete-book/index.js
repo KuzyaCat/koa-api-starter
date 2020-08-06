@@ -3,13 +3,10 @@ const writerService = require('resources/writer/writer.service');
 const bookSchema = require('../book.schema');
 
 async function handler(ctx) {
-  ctx.body = await writerService.update({ _id: ctx.params.id }, (doc) => {
-    const indexOfDelete = doc.books.findIndex((book) => book._id === ctx.params.book_id);
-    if (indexOfDelete >= 0) {
-      doc.books.splice(indexOfDelete, 1);
-    }
-    return doc;
-  });
+  ctx.body = await writerService._collection.update(
+    { _id: ctx.params.id },
+    { $pull: { books: { _id: ctx.params.book_id } } },
+  );
 }
 
 module.exports.register = (router) => {

@@ -11,11 +11,17 @@ const schema = Joi.object({
 });
 
 async function handler(ctx) {
-  const { firstName, lastName, age, books }  = ctx.validatedData;
+  const {
+    firstName, lastName, age, books,
+  } = ctx.validatedData;
   ctx.body = await writerService._collection.update(
     { _id: ctx.params.id },
-    { $set: { firstName, lastName, age, books },
-  });
+    {
+      $set: {
+        firstName, lastName, age, books,
+      },
+    },
+  );
 }
 
 module.exports.register = (router) => {

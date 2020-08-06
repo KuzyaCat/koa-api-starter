@@ -10,12 +10,12 @@ const schema = Joi.object({
 });
 
 async function handler(ctx) {
-  let {
+  const {
     pageNumber,
     documentsInPage,
-    sortBy,
     sortOrder,
   } = ctx.request.query;
+  let { sortBy } = ctx.request.query;
 
   if (!sortBy) {
     sortBy = '_id';
@@ -30,14 +30,14 @@ async function handler(ctx) {
     })
   );
 
-  const numberOfAllDocuments = await writerService.count();
+  const numberOfAllDocuments = writersList.count;
 
   ctx.body = {
-    data: writersList,
+    data: writersList.results,
     meta: {
       numberOfAllDocuments,
     },
-  }
+  };
 }
 
 module.exports.register = (router) => {

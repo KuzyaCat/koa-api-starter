@@ -8,8 +8,12 @@ const schema = Joi.object({
 });
 
 async function handler(ctx) {
-  const data = ctx.validatedData;
-  ctx.body = await writerService.update({ _id: ctx.params.id }, { $set: { books: data.books } });
+  const { books } = ctx.validatedData;
+  const booksToUpdate = books.map((book) => ({
+    title: book.title,
+    genre: book.genre,
+  }));
+  ctx.body = await writerService.update({ _id: ctx.params.id }, { $set: { books: booksToUpdate } });
 }
 
 module.exports.register = (router) => {

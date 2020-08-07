@@ -1,11 +1,9 @@
 const supertest = require('supertest');
-const chai = require('chai');
 const faker = require('faker');
 const server = require('app');
 const writerService = require('./writer.service');
 
 const app = server.listen();
-chai.should();
 
 const validWriterData = {
   firstName: faker.name.firstName(),

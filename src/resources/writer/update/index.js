@@ -10,6 +10,23 @@ const schema = Joi.object({
   books: Joi.array().items(bookSchema),
 });
 
+async function validator(ctx, next) {
+  const isValidIdParam = await writerService.exists({
+    _id: ctx.params.id,
+  });
+
+  if (!isValidIdParam) {
+    ctx.body = {
+      errors: {
+        id: ['The document does not exist'],
+      },
+    };
+    ctx.throw(400);
+  }
+
+  await next();
+}
+
 async function handler(ctx) {
   const {
     firstName, lastName, age, books,
@@ -25,5 +42,5 @@ async function handler(ctx) {
 }
 
 module.exports.register = (router) => {
-  router.put('/:id', validate(schema), handler);
+  router.put('/:id', validate(schema), validator, handler);
 };
